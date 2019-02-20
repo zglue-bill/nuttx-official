@@ -1,7 +1,7 @@
 /****************************************************************************
- * arch/renesas/src/common/up_allocateheap.c
+ * arch/renesas/src/m16c/m16c_irq.c
  *
- *   Copyright (C) 2008, 2013, 2015 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2009, 2011 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,37 +39,75 @@
 
 #include <nuttx/config.h>
 
-#include <sys/types.h>
-#include <debug.h>
-
+#include <stdint.h>
 #include <nuttx/arch.h>
-#include <nuttx/board.h>
+#include <nuttx/irq.h>
 
-#include "up_arch.h"
 #include "up_internal.h"
 
 /****************************************************************************
- * Public Functions
+ * Public Data
  ****************************************************************************/
+
+/* This holds a references to the current interrupt level register storage
+ * structure.  If is non-NULL only during interrupt processing.
+ */
+
+volatile uint32_t *g_current_regs; /* Actually a pointer to the beginning of a uint8_t array */
 
 /****************************************************************************
- * Name: up_allocate_heap
+ * Name: up_irqinitialize
+ ****************************************************************************/
+
+void up_irqinitialize(void)
+{
+  /* Currents_regs is non-NULL only while processing an interrupt */
+
+  g_current_regs = NULL;
+
+  /* Enable interrupts */
+
+#ifndef CONFIG_SUPPRESS_INTERRUPTS
+  up_irq_enable();
+#endif
+}
+
+/****************************************************************************
+ * Name: up_disable_irq
  *
  * Description:
- *   This function will be called to dynamically set aside the heap region.
+ *   On many architectures, there are three levels of interrupt enabling: (1)
+ *   at the global level, (2) at the level of the interrupt controller,
+ *   and (3) at the device level.  In order to receive interrupts, they
+ *   must be enabled at all three levels.
  *
- *   For the kernel build (CONFIG_BUILD_KERNEL=y) with both kernel- and
- *   user-space heaps (CONFIG_MM_KERNEL_HEAP=y), this function provides the
- *   size of the unprotected, user-space heap.
- *
- *   If a protected kernel-space heap is provided, the kernel heap must be
- *   allocated (and protected) by an analogous up_allocate_kheap().
+ *   This function implements disabling of the device specified by 'irq'
+ *   at the interrupt controller level if supported by the architecture
+ *   (up_irq_save() supports the global level, the device level is hardware
+ *   specific).
  *
  ****************************************************************************/
 
-void up_allocate_heap(FAR void **heap_start, size_t *heap_size)
+#ifndef CONFIG_ARCH_NOINTC
+void up_disable_irq(int irq)
 {
-  *heap_start = (FAR void*)g_idle_topstack;
-  *heap_size = CONFIG_RAM_END - g_idle_topstack;
-   board_autoled_on(LED_HEAPALLOCATE);
+  /* There are no ez80 interrupt controller settings to disable IRQs */
 }
+
+/****************************************************************************
+ * Name: up_enable_irq
+ *
+ * Description:
+ *   This function implements enabling of the device specified by 'irq'
+ *   at the interrupt controller level if supported by the architecture
+ *   (up_irq_save() supports the global level, the device level is hardware
+ *   specific).
+ *
+ ****************************************************************************/
+
+void up_enable_irq(int irq)
+{
+  /* There are no ez80 interrupt controller settings to enable IRQs */
+}
+
+#endif /* CONFIG_ARCH_NOINTC */

@@ -1,7 +1,7 @@
 /****************************************************************************
- * arch/renesas/src/common/up_allocateheap.c
+ * arch/renesas/src/m16c/up_copystate.c
  *
- *   Copyright (C) 2008, 2013, 2015 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,37 +39,37 @@
 
 #include <nuttx/config.h>
 
-#include <sys/types.h>
-#include <debug.h>
+#include <stdint.h>
+#include <string.h>
 
-#include <nuttx/arch.h>
-#include <nuttx/board.h>
+#include <arch/irq.h>
 
-#include "up_arch.h"
 #include "up_internal.h"
+
+/****************************************************************************
+ * Pre-processor Definitions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Name: up_allocate_heap
- *
- * Description:
- *   This function will be called to dynamically set aside the heap region.
- *
- *   For the kernel build (CONFIG_BUILD_KERNEL=y) with both kernel- and
- *   user-space heaps (CONFIG_MM_KERNEL_HEAP=y), this function provides the
- *   size of the unprotected, user-space heap.
- *
- *   If a protected kernel-space heap is provided, the kernel heap must be
- *   allocated (and protected) by an analogous up_allocate_kheap().
- *
+ * Name: up_copystate
  ****************************************************************************/
 
-void up_allocate_heap(FAR void **heap_start, size_t *heap_size)
+/* A little faster than most memcpy's */
+
+void up_copystate(uint32_t *dest, uint32_t *src)
 {
-  *heap_start = (FAR void*)g_idle_topstack;
-  *heap_size = CONFIG_RAM_END - g_idle_topstack;
-   board_autoled_on(LED_HEAPALLOCATE);
+  memcpy(dest, src, XCPTCONTEXT_SIZE);
 }
+

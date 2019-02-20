@@ -1,7 +1,7 @@
 /****************************************************************************
- * arch/renesas/src/common/up_allocateheap.c
+ * arch/z80/src/ez80/ez80_initialstate.c
  *
- *   Copyright (C) 2008, 2013, 2015 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,37 +39,54 @@
 
 #include <nuttx/config.h>
 
-#include <sys/types.h>
-#include <debug.h>
-
+#include <stdint.h>
+#include <string.h>
 #include <nuttx/arch.h>
-#include <nuttx/board.h>
 
-#include "up_arch.h"
+#include "chip/chip.h"
 #include "up_internal.h"
+#include "up_arch.h"
+# define RX_SP 10
+# define RX_PC 8
+
+/****************************************************************************
+ * Pre-processor Definitions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Data
+ ****************************************************************************/
+
+/****************************************************************************
+ * Private Functions
+ ****************************************************************************/
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Name: up_allocate_heap
+ * Name: up_initial_state
  *
  * Description:
- *   This function will be called to dynamically set aside the heap region.
+ *   A new thread is being started and a new TCB
+ *   has been created. This function is called to initialize
+ *   the processor specific portions of the new TCB.
  *
- *   For the kernel build (CONFIG_BUILD_KERNEL=y) with both kernel- and
- *   user-space heaps (CONFIG_MM_KERNEL_HEAP=y), this function provides the
- *   size of the unprotected, user-space heap.
- *
- *   If a protected kernel-space heap is provided, the kernel heap must be
- *   allocated (and protected) by an analogous up_allocate_kheap().
+ *   This function must setup the intial architecture registers
+ *   and/or  stack so that execution will begin at tcb->start
+ *   on the next context switch.
  *
  ****************************************************************************/
 
-void up_allocate_heap(FAR void **heap_start, size_t *heap_size)
+void up_initial_state(struct tcb_s *tcb)
 {
-  *heap_start = (FAR void*)g_idle_topstack;
-  *heap_size = CONFIG_RAM_END - g_idle_topstack;
-   board_autoled_on(LED_HEAPALLOCATE);
+  struct xcptcontext *xcp = &tcb->xcp;
+
+  /* Initialize the initial exception register context structure */
+
+  memset(xcp, 0, sizeof(struct xcptcontext));
+
+  xcp->regs[RX_SP] = (uint32_t)tcb->adj_stack_ptr;
+  xcp->regs[RX_PC] = (uint32_t)tcb->start;
 }

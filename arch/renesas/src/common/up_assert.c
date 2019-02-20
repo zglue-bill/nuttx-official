@@ -152,7 +152,7 @@ void up_assert(const uint8_t *filename, int lineno)
   struct tcb_s *rtcb = running_task();
 #endif
 
-  board_autoled_on(LED_ASSERTION);
+  //board_autoled_on(LED_ASSERTION);
 
   /* Flush any buffered SYSLOG data (from prior to the assertion) */
 
@@ -166,7 +166,7 @@ void up_assert(const uint8_t *filename, int lineno)
         filename, lineno);
 #endif
 
-  up_dumpstate();
+  //up_dumpstate();
 
 #ifdef CONFIG_ARCH_USBDUMP
   /* Dump USB trace data */

@@ -1076,6 +1076,15 @@ config ARCH_BOARD_QEMU_I486
 		Port of NuttX to QEMU in i486 mode.  This port will also run on real i486
 		hardwared (Google the Bifferboard).
 
+config ARCH_BOARD_RX65N
+	bool "RX65N renesas board"
+	depends on ARCH_CHIP_R5F565NEDDFC
+	select ARCH_HAVE_LEDS
+	select ARCH_HAVE_BUTTONS
+	---help---
+		This is a port of the renesas RX65N on the Renesas RX65N board.
+		STATUS:  Work has just began on this port.
+
 config ARCH_BOARD_SABRE_6QUAD
 	bool "NXP/Freescale i.MX6 Sabre-6Quad board"
 	depends on ARCH_CHIP_IMX6_6QUAD
@@ -1875,6 +1884,7 @@ config ARCH_BOARD
 	default "pic32mx7mmb"              if ARCH_BOARD_PIC32MX7MMB
 	default "pic32mz-starterkit"       if ARCH_BOARD_PIC32MZ_STARTERKIT
 	default "qemu-i486"                if ARCH_BOARD_QEMU_I486
+	default "rx65n"                    if ARCH_BOARD_RX65N
 	default "sabre-6quad"              if ARCH_BOARD_SABRE_6QUAD
 	default "sama5d2-xult"             if ARCH_BOARD_SAMA5D2_XULT
 	default "sama5d3x-ek"              if ARCH_BOARD_SAMA5D3X_EK
@@ -2278,6 +2288,9 @@ source "configs/pic32mz-starterkit/Kconfig"
 endif
 if ARCH_BOARD_QEMU_I486
 source "configs/qemu-i486/Kconfig"
+endif
+if ARCH_BOARD_RX65N
+source "configs/rx65n/Kconfig"
 endif
 if ARCH_BOARD_SABRE_6QUAD
 source "configs/sabre-6quad/Kconfig"

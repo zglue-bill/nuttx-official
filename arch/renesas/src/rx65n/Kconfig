@@ -1,0 +1,24 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+if ARCH_RX65N
+comment "RX65N Configuration Options"
+
+menu "RX65N Peripheral Selections"
+
+config RX65N_HAVE_USBDEV
+	bool
+	default n
+config RX65N_USB
+	bool "USB Device"
+	default n
+	depends on RX65N_HAVE_USBDEV
+	select USBDEV
+config RX65N_SCI2
+	bool "SCI2"
+	default n
+	select SCI2_SERIALDRIVER
+endmenu # RX65N Peripheral Selections
+endif

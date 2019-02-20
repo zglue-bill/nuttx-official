@@ -1,7 +1,8 @@
 /****************************************************************************
  * arch/renesas/src/common/up_initialize.c
  *
- *   Copyright (C) 2008-2010, 2012-2013, 2015-2017 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2008-2010, 2012-2013, 2015-2017, 2019 Gregory Nutt. All
+ *     rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +56,7 @@
 #include <nuttx/serial/pty.h>
 #include <nuttx/crypto/crypto.h>
 #include <nuttx/power/pm.h>
-
+#include <rx65n_tmr.h>
 #include "up_arch.h"
 #include "up_internal.h"
 
@@ -93,7 +94,8 @@ void up_initialize(void)
 #if !defined(CONFIG_SUPPRESS_INTERRUPTS) && !defined(CONFIG_SUPPRESS_TIMER_INTS)
   /* Initialize the system timer interrupt */
 
-  renesas_timer_initialize();
+  //renesas_timer_initialize();
+  R_TMR_Create();
 #endif
 
 #ifdef CONFIG_PM
@@ -209,7 +211,5 @@ void up_initialize(void)
 
   /* Initialize USB */
 
-  up_usbinitialize();
-
-  board_autoled_on(LED_IRQSENABLED);
+  //up_usbinitialize();
 }

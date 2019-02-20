@@ -1,7 +1,7 @@
 /****************************************************************************
- * arch/renesas/src/common/up_allocateheap.c
+ * configs/us7032evb1/include/board.h
  *
- *   Copyright (C) 2008, 2013, 2015 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2008-2009 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,43 +33,64 @@
  *
  ****************************************************************************/
 
+#ifndef _CONFIGS_RX65N_BOARD_H
+#define _CONFIGS_RX65N_BOARD_H
+
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-#include <nuttx/config.h>
+#ifndef __ASSEMBLY__
+# include <stdint.h>
+#endif
+//#include "chip.h"
 
-#include <sys/types.h>
-#include <debug.h>
+/****************************************************************************
+ * Pre-processor Definitions
+ ****************************************************************************/
 
-#include <nuttx/arch.h>
-#include <nuttx/board.h>
+/* Clocking *****************************************************************/
 
-#include "up_arch.h"
-#include "up_internal.h"
+#define RX_CLOCK            120000000  /* 120 MHz */
+
+/* LED definitions **********************************************************/
+
+/* The SH1_LPEVB only a single LED controlled by either port A, pin 15, or
+ * port B, pin 15 (selectable via JP8).
+ */
+
+#define LED_STARTED       1     /* ON    OFF   NC    NC   */
+#define LED_HEAPALLOCATE  0     /* NC    NC    NC    NC   */
+#define LED_IRQSENABLED   0     /* NC    NC    NC    NC   */
+#define LED_STACKCREATED  2     /* ON    ON    NC    NC   */
+#define LED_INIRQ         0     /* NC    NC    NC    NC   */
+#define LED_SIGNAL        0     /* NC    NC    NC    NC   */
+#define LED_ASSERTION     0     /* NC    NC    NC    NC   */
+#define LED_PANIC         3     /* OFF   ON    NC    NC   (flashing 2Hz) */
+
+
+/* Button definitions *******************************************************/
+
+/****************************************************************************
+ * Public Data
+ ****************************************************************************/
+
+#ifndef __ASSEMBLY__
+#ifdef __cplusplus
+#define EXTERN extern "C"
+extern "C" {
+#else
+#define EXTERN extern
+#endif
 
 /****************************************************************************
  * Public Functions
  ****************************************************************************/
 
-/****************************************************************************
- * Name: up_allocate_heap
- *
- * Description:
- *   This function will be called to dynamically set aside the heap region.
- *
- *   For the kernel build (CONFIG_BUILD_KERNEL=y) with both kernel- and
- *   user-space heaps (CONFIG_MM_KERNEL_HEAP=y), this function provides the
- *   size of the unprotected, user-space heap.
- *
- *   If a protected kernel-space heap is provided, the kernel heap must be
- *   allocated (and protected) by an analogous up_allocate_kheap().
- *
- ****************************************************************************/
-
-void up_allocate_heap(FAR void **heap_start, size_t *heap_size)
-{
-  *heap_start = (FAR void*)g_idle_topstack;
-  *heap_size = CONFIG_RAM_END - g_idle_topstack;
-   board_autoled_on(LED_HEAPALLOCATE);
+#undef EXTERN
+#ifdef __cplusplus
 }
+#endif
+#endif
+
+#endif  /* _CONFIGS_US7032EVB1_BOARD_H */

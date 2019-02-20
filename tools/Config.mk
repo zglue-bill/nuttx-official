@@ -153,7 +153,8 @@ endef
 
 define ASSEMBLE
 	@echo "AS: $1"
-	$(Q) $(CC) -c $(AFLAGS) $1 -o $2
+#	$(Q) $(CC) -c $(AFLAGS) $1 -o $2
+	$(AS) $1 -o $2
 endef
 
 # INSTALL_LIB - Install a library $1 into target $2

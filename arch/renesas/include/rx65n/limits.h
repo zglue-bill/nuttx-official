@@ -1,7 +1,7 @@
 /****************************************************************************
- * arch/renesas/src/common/up_allocateheap.c
+ * arch/renesas/include/sh1/limits.h
  *
- *   Copyright (C) 2008, 2013, 2015 Gregory Nutt. All rights reserved.
+ *   Copyright (C) 2008, 2009, 2012 Gregory Nutt. All rights reserved.
  *   Author: Gregory Nutt <gnutt@nuttx.org>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,43 +33,56 @@
  *
  ****************************************************************************/
 
+#ifndef __ARCH_RENESAS_INCLUDE_SH1_LIMITS_H
+#define __ARCH_RENESAS_INCLUDE_SH1_LIMITS_H
+
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-#include <nuttx/config.h>
-
-#include <sys/types.h>
-#include <debug.h>
-
-#include <nuttx/arch.h>
-#include <nuttx/board.h>
-
-#include "up_arch.h"
-#include "up_internal.h"
-
 /****************************************************************************
- * Public Functions
+ * Pre-processor Definitions
  ****************************************************************************/
 
-/****************************************************************************
- * Name: up_allocate_heap
- *
- * Description:
- *   This function will be called to dynamically set aside the heap region.
- *
- *   For the kernel build (CONFIG_BUILD_KERNEL=y) with both kernel- and
- *   user-space heaps (CONFIG_MM_KERNEL_HEAP=y), this function provides the
- *   size of the unprotected, user-space heap.
- *
- *   If a protected kernel-space heap is provided, the kernel heap must be
- *   allocated (and protected) by an analogous up_allocate_kheap().
- *
- ****************************************************************************/
+#define CHAR_BIT    8
+#define SCHAR_MIN   (-SCHAR_MAX - 1)
+#define SCHAR_MAX   127
+#define UCHAR_MAX   255
 
-void up_allocate_heap(FAR void **heap_start, size_t *heap_size)
-{
-  *heap_start = (FAR void*)g_idle_topstack;
-  *heap_size = CONFIG_RAM_END - g_idle_topstack;
-   board_autoled_on(LED_HEAPALLOCATE);
-}
+/* These could be different on machines where char is unsigned */
+
+#ifdef __CHAR_UNSIGNED__
+#define CHAR_MIN    0
+#define CHAR_MAX    UCHAR_MAX
+#else
+#define CHAR_MIN    SCHAR_MIN
+#define CHAR_MAX    SCHAR_MAX
+#endif
+
+#define SHRT_MIN    (-SHRT_MAX - 1)
+#define SHRT_MAX    32767
+#define USHRT_MAX   65535U
+
+/* On SH-1, type 'int' is 32-bits */
+
+#define INT_MIN     (-INT_MAX - 1)
+#define INT_MAX     2147483647
+#define UINT_MAX    4294967295U
+
+/* On SH-1, type 'long' is the same size as type 'int', 32-bits */
+
+#define LONG_MIN    (-LONG_MAX - 1)
+#define LONG_MAX    2147483647L
+#define ULONG_MAX   4294967295UL
+
+#define LLONG_MIN   (-LLONG_MAX - 1)
+#define LLONG_MAX   9223372036854775807LL
+#define ULLONG_MAX  18446744073709551615ULL
+
+/* A pointer is 4 bytes */
+
+#define PTR_MIN     (-PTR_MAX - 1)
+#define PTR_MAX     2147483647
+#define UPTR_MAX    4294967295U
+
+#endif /* __ARCH_RENESAS_INCLUDE_SH1_LIMITS_H */
