@@ -15,10 +15,10 @@
 int
 main(int argc, char *argv)
 {
-        int foo;
+  int foo;
 
         /* 0x00FF0000     lksajdflajslkdfjved */
         foo = 1;
-        printf("foo is %d\n", foo);
+  printf("foo is %d\n", foo);
 }
 
